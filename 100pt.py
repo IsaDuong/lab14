@@ -19,7 +19,7 @@ targetx2 = 280
 targety2 = 80
 target = drawpad.create_rectangle(targetx1,targety1,targetx2,targety2, fill="red")
 player = drawpad.create_rectangle(240,240,260,260, fill="white")
-
+targetMove = True
 
 class MyApp:
 	def __init__(self, parent):
@@ -54,6 +54,7 @@ class MyApp:
 		  
 		# This creates the drawpad - no need to change this 
 		drawpad.pack()
+		self.animate()
 		
 	def animate(self):
 	    global target
@@ -65,15 +66,17 @@ class MyApp:
             elif targetx2 > drawpad.winfo_width():
                 direction = 5
             drawpad.move(target,direction,0)
-            drawpad.after(10,animate)
-		
+            drawpad.after(10,self.animate)
 		
 	def button1Click(self, event):   
                 # "global" makes sure that we can access our oval and our drawpad
 		global oval
 		global drawpad
                 x1,y1,x2,y2 = drawpad.coords(player)
-                drawpad.move(player,0,-10)
+                if y1<320:
+                    drawpad.move(player,0,-10)
+                elif y1>320:
+                    drawpad.move(player,0,0)
                 
         def button2Click(self, event):   
 		global oval
@@ -106,9 +109,15 @@ class MyApp:
 	# This way we only have to write it once, and call it from
 	# every button click function.
 	def collisionDetect(self):
-                global oval
+                global target
 		global drawpad
+		global player
                 x1,y1,x2,y2 = drawpad.coords(player)
+                targetx1,targety1,targetx2,targety2 = drawpad.coords(target)
+                if (playerx1>targetx1 and playerx2<targetx2) and (playery1>targety1 and playery2<targety2):
+                    targetMove = False
+                else:
+                    targetMove = True
 
                 # Do your if statement - remember to return True if successful!
                 
